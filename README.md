@@ -2,7 +2,7 @@
 
 A single-file browser demo that makes one of psychoacoustics' most striking phenomena audible and visible: **rhythmic note repetition gradually becomes continuous pitch as the repetition rate increases**.
 
-[Live Demo](https://kg5zsu.github.io/hssynth/) <!-- update if you deploy to Pages -->
+[Live Demo]([https://ellipticalshadowfax.github.io/hssynth/]) <!-- update if you deploy to Pages -->
 
 ---
 
