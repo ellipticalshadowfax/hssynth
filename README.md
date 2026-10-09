@@ -252,7 +252,7 @@ No build step required. Open `index.html` directly in any modern browser:
 
 ```bash
 # Clone the repo
-git clone git@github.com:kg5zsu/hssynth.git
+git clone git@github.com:ellipticalshadowfax/hssynth.git
 cd hssynth
 
 # Open directly — works in Chrome, Firefox, Safari, Edge
