@@ -165,9 +165,9 @@ This demo bridges several fields under one roof:
 
 | Button | Description |
 |---|---|
-| **▶ Sweep** | Plays a continuous acceleration from Start BPM to End BPM over the configured sweep duration, then holds at End BPM for 20 seconds. |
-| **♩ Normal** | Plays at the Start BPM for 20 seconds — pure rhythm mode. |
-| **♩ High Speed** | Plays at the End BPM for 20 seconds — pitch mode. |
+| **▶ Sweep** | Plays a continuous acceleration from Start BPM to End BPM over the configured sweep duration, then holds at End BPM for 30 seconds. |
+| **♩ Normal** | Plays at the Start BPM for 30 seconds — pure rhythm mode. |
+| **♩ High Speed** | Plays at the End BPM for 30 seconds — pitch mode. |
 
 Clicking any active button stops playback.
 
@@ -177,7 +177,7 @@ Clicking any active button stops playback.
 |---|---|---|
 | **Start BPM** | 60 | Initial BPM for the sweep, and the fixed BPM for Normal mode. |
 | **End BPM** | 2 000 | Final BPM for the sweep, and the fixed BPM for High Speed mode. Automatically capped to the Nyquist limit for the selected note value. |
-| **Note** | A4 (440 Hz) | The pitch used for every note event. Drag to select any MIDI note (C2–C8). |
+| **Note** | A4 (440 Hz) | The pitch used for every note event. Drag to select any MIDI note (C1–C7). |
 
 ### Controls
 
@@ -224,7 +224,7 @@ A real-time 8192-point FFT analyzer (0–10 kHz) with:
 - **↻ rep‑rate cursor** — dashed line at `fᵣ` when it differs from `fₙ` by more than 10 Hz
 - **▲ peak label** — the single strongest FFT bin, regardless of source
 - **Regime zones** — translucent background bands: green (Rhythm < 20 Hz), yellow (Transition 20–60 Hz), red (Pitch > 60 Hz)
-- Log‑spaced frequency tick marks at 1 kHz intervals
+- Linear‑spaced frequency tick marks at 1 kHz intervals
 
 ### Waveform View
 
@@ -238,8 +238,8 @@ All audio is generated in real time using the **Web Audio API** — no samples, 
 
 1. A `ScriptProcessorNode` (256 samples per callback, ~5.8 ms at 44.1 kHz) runs the synthesis algorithm incrementally. The chosen waveform function (sine / square / saw / triangle) is evaluated sample-by-sample in each callback.
 2. Each sample belongs to a slot determined by the running beat count. If the slot is "on" (given the articulation setting), the oscillator phase advances and the sample is filled; otherwise it is zero.
-3. The synthesizer maintains `virtualTime`, `phase`, and `prevSlot` state between callbacks so the output is sample-accurate across the entire sweep.
-4. BPM sweeps linearly: at any time `t` in the sweep, `bpm(t) = startBPM + (endBPM - startBPM) × t / duration`. Beat accumulation uses the integral of this ramp so timing is exact.
+3. The synthesizer maintains `virtualTime`, `phase`, `beats`, and gate state between callbacks so the output is sample-accurate across the entire sweep. The oscillator phase only resets on a note attack, so Legato 100% produces a genuinely continuous waveform.
+4. BPM sweeps linearly: at any time `t` in the sweep, `bpm(t) = startBPM + (endBPM - startBPM) × t / duration`. Beat accumulation integrates this ramp sample‑by‑sample, so timing is exact and parameter changes during playback apply without jumps.
 5. The output is connected through a `GainNode` (volume control) and an `AnalyserNode` (FFT / waveform analysis) before reaching the destination.
 
 Because audio is generated on‑the‑fly rather than pre‑rendered, **every parameter change takes effect on the very next callback** (~5.8 ms latency). There is no generation delay, no buffer pre‑render spinner, and controls remain live during playback.
